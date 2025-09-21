@@ -1,0 +1,90 @@
+/* C:\Users\Lenovo\Desktop\lyric-flow\src\components\LoginScreen.css */
+
+.auth-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f0f2f5; /* Light gray background */
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+}
+
+.auth-screen h1 {
+  color: #333;
+  margin-bottom: 30px;
+  font-size: 2.5em;
+  font-weight: bold;
+}
+
+.auth-screen form {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-screen input[type="email"],
+.auth-screen input[type="password"] {
+  width: calc(100% - 20px); /* Adjust for padding */
+  padding: 12px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1em;
+  transition: border-color 0.3s ease;
+}
+
+.auth-screen input[type="email"]:focus,
+.auth-screen input[type="password"]:focus {
+  border-color: #007bff; /* Blue focus border */
+  outline: none;
+}
+
+.auth-screen .btn {
+  background-color: #007bff; /* Primary blue button */
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.auth-screen .btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-2px);
+}
+
+.auth-screen p {
+  margin-top: 20px;
+  color: #555;
+  font-size: 0.95em;
+}
+
+.auth-screen .link {
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.auth-screen .link:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  color: #dc3545; /* Red for error messages */
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  text-align: center;
+}

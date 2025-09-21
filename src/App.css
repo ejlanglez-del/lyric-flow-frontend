@@ -1,0 +1,243 @@
+body {
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+.App {
+  width: 90%;
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+h1, h2 {
+  color: #ffffff;
+  font-weight: 300;
+}
+
+h1 {
+    border-bottom: 1px solid #444;
+    padding-bottom: 10px;
+    margin-bottom: 2rem;
+}
+
+textarea {
+  width: 100%;
+  height: 300px;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  resize: vertical;
+}
+
+.btn {
+  background-color: #1db954;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px; /* Más sutil */
+  padding: 12px 24px; /* Reducido */
+  font-size: 1rem; /* Reducido */
+  font-weight: 600; /* Un poco menos bold */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out; /* Transición para todo */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Sombra sutil */
+}
+
+.btn:hover {
+  background-color: #1ed760;
+}
+
+.btn:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.secondary-btn {
+  background-color: #6c757d; /* Gris neutral */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.secondary-btn:hover {
+  background-color: #5a6268;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background-color: #333;
+  border-radius: 5px;
+  margin: 1.5rem 0;
+  overflow: hidden;
+}
+
+.progress-bar-inner {
+  height: 100%;
+  background-color: #1db954;
+  transition: width 0.3s ease-in-out;
+  border-radius: 5px;
+}
+
+.lyrics-display {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.8;
+}
+
+.completed-lyric {
+  color: #888;
+  transition: color 0.5s;
+}
+
+.current-lyric-cue {
+  color: #fff;
+  font-weight: bold;
+}
+
+.user-input-display {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    font-style: italic;
+    min-height: 50px;
+    transition: background-color 0.3s;
+}
+
+.feedback-correct {
+    background-color: rgba(29, 185, 84, 0.2);
+    color: #1db954;
+}
+
+.feedback-incorrect {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+}
+
+/* Estilos para la insignia de emoción */
+.emotion-display {
+  text-align: center;
+  margin: 0.2rem 0;
+  min-height: 24px;
+  display: flex; /* Make it a flex container */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */ /* Evita que el layout salte mientras analiza */
+}
+
+.emotion-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.8em;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+}
+
+/* Estilos para la pantalla de finalización */
+.completion-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.completion-screen h2 {
+  font-size: 2.5rem;
+  color: #1db954; /* Verde de la marca */
+}
+
+.song-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive columns */
+  gap: 20px; /* Space between items */
+  margin-top: 20px;
+}
+
+.song-item {
+  background-color: #1e1e1e;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  display: flex; /* Make it a flex container */
+  flex-direction: column; /* Arrange content vertically within the item */
+  justify-content: space-between; /* Push content to top/bottom */
+  align-items: center; /* Center flex items horizontally */
+  text-align: center; /* Center text */
+  height: 100%;
+  position: relative; /* Added for absolute positioning of children */
+}
+
+.song-item h3 {
+  margin-top: 0;
+  margin-bottom: 0px; /* Even less margin-bottom */
+  font-size: 1.2rem;
+  color: #1db954; /* Highlight title */
+}
+
+.song-item p {
+  margin-top: 2px; /* Even less margin-top */
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  color: #bbb;
+}
+
+.song-item .btn {
+  padding: 8px 16px; /* Smaller padding */
+  font-size: 0.85rem; /* Smaller font size */
+  border-radius: 15px; /* Slightly more rounded for smaller size */
+}
+
+.song-item .btn:last-child {
+  margin-right: 0;
+}
+
+.search-input {
+  flex: 2; /* Takes up more space */
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  font-size: 1rem;
+}
+
+.sort-controls {
+  flex: 1; /* Takes up less space */
+  margin-left: 15px; /* Space between search and sort */
+  display: flex; /* Make sort controls flex to align label and select */
+  align-items: center;
+  justify-content: flex-end; /* Align to the right within its flex space */
+}
+
+.sort-select {
+  padding: 4px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  font-size: 0.8rem; /* Even smaller font size */
+}
+
+.song-item .btn {
+  margin-top: 5px;
+  margin-right: 5px;
+}
+
+.song-item .btn:last-child {
+  margin-right: 0;
+}
