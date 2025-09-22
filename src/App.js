@@ -24,8 +24,7 @@ function App() {
   const [editingSong, setEditingSong] = useState(null); // New state for editing song
   const [showUsernamePrompt, setShowUsernamePrompt] = useState(false); // New state for username prompt
 
-
-
+  const SRS_SCHEDULE_HOURS = React.useMemo(() => [3, 24, 48, 120, 360, 720, 2160, 4320, 12960], []); // In hours
 
 
   const handleNavigateToQuickPractice = () => {
@@ -45,7 +44,7 @@ function App() {
     if (level === 0) return Date.now(); // Level 0 is always available
     const hoursToWait = SRS_SCHEDULE_HOURS[level - 1] || SRS_SCHEDULE_HOURS[SRS_SCHEDULE_HOURS.length - 1];
     return lastPassedTimestamp + (hoursToWait * 60 * 60 * 1000);
-  }, []); // SRS_SCHEDULE_HOURS removed from dependencies
+  }, [SRS_SCHEDULE_HOURS]); // SRS_SCHEDULE_HOURS added back to dependencies
 
   const handleExamComplete = (songId) => {
     const key = 'lyricFlow_examLevels';
