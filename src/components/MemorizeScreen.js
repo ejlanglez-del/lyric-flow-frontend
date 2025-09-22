@@ -519,7 +519,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
                                 <span key={lineIndex}>{line}<br/></span>
                             ))}
                         </p>
-                    );})
+                    });}
                 </div>
                     </div>
                 </>
