@@ -41,7 +41,7 @@ const API_URL = process.env.REACT_APP_API_URL + '/api/users/';
 const register = async (userData) => {
   const response = await axios.post(API_URL + 'register', userData);
   if (response.data) {
-    localStorage.setItem('user', JSON.stringify(response.data));
+    localStorage.setItem('userInfo', JSON.stringify(response.data));
   }
   return response.data;
 };
@@ -52,7 +52,7 @@ const login = async (userData) => {
     userData,
     { headers: { 'Content-Type': 'application/json' } }
   );
-    localStorage.setItem('user', JSON.stringify(response.data));
+    localStorage.setItem('userInfo', JSON.stringify(response.data));
     setUser(response.data);
   return response.data;
 };
