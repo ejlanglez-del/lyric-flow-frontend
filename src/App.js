@@ -24,7 +24,8 @@ function App() {
   const [editingSong, setEditingSong] = useState(null); // New state for editing song
   const [showUsernamePrompt, setShowUsernamePrompt] = useState(false); // New state for username prompt
 
-  const SRS_SCHEDULE_HOURS = React.useMemo(() => [3, 24, 48, 120, 360, 720, 2160, 4320, 12960], []); // In hours
+  // Spaced Repetition Schedule in hours. L1: 3h, L2: 1d, L3: 2d, L4: 5d, L5: 15d, L6: 1m, L7: 3m, L8: 6m, L9: 1.5y
+  const SRS_SCHEDULE_HOURS = React.useMemo(() => [3, 24, 48, 120, 360, 720, 2160, 4320, 13140], []);
 
 
   const handleNavigateToQuickPractice = () => {

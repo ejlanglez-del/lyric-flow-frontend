@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 import songService from '../services/songService';
+import CountdownTimer from './CountdownTimer';
 
 
 
@@ -87,13 +88,17 @@ function SongListScreen({ songs, onSelectSong, onBack, onSelectForLearning, onDe
           <p>{songs.length > 0 && filteredAndSortedSongs.length === 0 ? 'No se encontraron canciones que coincidan con la búsqueda.' : 'No tienes canciones guardadas.'}</p>
         ) : (
           filteredAndSortedSongs.map((song) => {
-            // Removed unused isExamAvailable variable
+            const isExamAvailable = Date.now() >= song.nextExamAvailableAt;
             return (
             <div key={song._id} className="song-item">
               <h3>{(song.title || '[Título Desconocido]')} - {(song.artist || '[Artista Desconocido]')}</h3>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '0px', alignItems: 'center' }}>
                 {isExamMode ? (
-                  <button className="btn" onClick={() => onSelectSong(song)}>Comenzar Examen</button>
+                  isExamAvailable ? (
+                    <button className="btn" onClick={() => onSelectSong(song)}>Comenzar Examen</button>
+                  ) : (
+                    <CountdownTimer targetDate={song.nextExamAvailableAt} />
+                  )
                 ) : (
                   <>
                     <button className="btn secondary-btn" onClick={() => onSelectForLearning(song)}>Aprender</button>
