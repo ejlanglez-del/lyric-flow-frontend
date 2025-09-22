@@ -51,6 +51,7 @@ const login = async (userData) => {
     API_URL + 'login',
     userData,
     { headers: { 'Content-Type': 'application/json' } }
+  );
     localStorage.setItem('user', JSON.stringify(response.data));
     setUser(response.data);
   return response.data;
