@@ -12,7 +12,7 @@ function LoginScreen({ onNavigateToRegister }) {
     e.preventDefault();
     setError(null); // Clear previous errors
     try {
-      await login(email, password);
+      await login({ email, password });
     } catch (err) {
       setError(err.message || 'Error al iniciar sesión'); // Set error message
     }
