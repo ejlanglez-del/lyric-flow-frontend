@@ -36,55 +36,23 @@ export const AuthProvider = ({ children }) => {
     };
   }, [logout]);
 
-  const register = async (username, email, password) => {
-    try {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-      const { data } = await axios.post(
-        'http://localhost:5000/api/users/register',
-        { username, email, password }, // Changed 'name' to 'username'
-        config
-      );
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      setUser(data);
-    } catch (error) {
-      if (error.response) {
-        console.error('Error en el registro:', error.response.data.message);
-      } else if (error.request) {
-        console.error('Error de red: No se pudo conectar al servidor. Asegúrate de que el backend esté corriendo.');
-      } else {
-        console.error('Error:', error.message);
-      }
-    }
-  };
+const API_URL = process.env.REACT_APP_API_URL + '/api/users/';
 
-  const login = async (email, password) => {
-    try {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-      const { data } = await axios.post(
-        'http://localhost:5000/api/users/login',
-        { email, password },
-        config
-      );
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      setUser(data);
-    } catch (error) {
-      if (error.response) {
-        console.error('Error en el inicio de sesión:', error.response.data.message);
-      } else if (error.request) {
-        console.error('Error de red: No se pudo conectar al servidor. Asegúrate de que el backend esté corriendo.');
-      } else {
-        console.error('Error:', error.message);
-      }
-    }
-  };
+const register = async (userData) => {
+  const response = await axios.post(API_URL + 'register', userData);
+  if (response.data) {
+    localStorage.setItem('user', JSON.stringify(response.data));
+  }
+  return response.data;
+};
+
+const login = async (userData) => {
+  const response = await axios.post(API_URL + 'login', userData);
+  if (response.data) {
+    localStorage.setItem('user', JSON.stringify(response.data));
+  }
+  return response.data;
+};
 
   const updateUsername = (newUsername) => {
     setUser(prevUser => {
