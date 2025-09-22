@@ -123,7 +123,7 @@ function App() {
       }
     };
     fetchSongs();
-  }, [user]);
+  }, [user, calculateNextExamTime]);
 
   const handleSelectSongForMode = (song, mode = 'practice') => {
     setScreenMode(mode);

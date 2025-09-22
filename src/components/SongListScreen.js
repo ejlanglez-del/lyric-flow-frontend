@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 import songService from '../services/songService';
 
@@ -87,7 +87,7 @@ function SongListScreen({ songs, onSelectSong, onBack, onSelectForLearning, onDe
           <p>{songs.length > 0 && filteredAndSortedSongs.length === 0 ? 'No se encontraron canciones que coincidan con la búsqueda.' : 'No tienes canciones guardadas.'}</p>
         ) : (
           filteredAndSortedSongs.map((song) => {
-            const isExamAvailable = isExamMode ? Date.now() >= (song.nextExamAvailableAt || 0) : true;
+            // Removed unused isExamAvailable variable
             return (
             <div key={song._id} className="song-item">
               <h3>{(song.title || '[Título Desconocido]')} - {(song.artist || '[Artista Desconocido]')}</h3>

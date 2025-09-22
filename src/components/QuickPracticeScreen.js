@@ -26,7 +26,7 @@ function QuickPracticeScreen({ onBack }) {
     const [quickPracticeSongs, setQuickPracticeSongs] = useState([]);
     const [currentPracticeSongIndex, setCurrentPracticeSongIndex] = useState(0);
 
-    const fetchQuickPracticeContent = async () => {
+    const fetchQuickPracticeContent = React.useCallback(async () => {
         console.log('fetchQuickPracticeContent iniciado.');
         if (!user) {
             console.log('Usuario no autenticado, deteniendo fetchQuickPracticeContent.');

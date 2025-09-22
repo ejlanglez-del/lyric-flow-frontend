@@ -3,7 +3,7 @@ import AuthContext from '../context/AuthContext';
 
 function UsernamePromptScreen({ onUsernameSet }) { // Accept prop
   const [username, setUsername] = useState('');
-  const { user, updateUsername } = useContext(AuthContext);
+  const { updateUsername } = useContext(AuthContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
