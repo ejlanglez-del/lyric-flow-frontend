@@ -481,7 +481,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
             <h1>{mode === 'learn' ? 'Aprende la Letra' : 'Practica la Letra'}</h1>
             <ProgressBar current={currentIndex} total={paragraphs.length} />
 
-            <div className="emotion-display" className={mode === 'quickPractice' ? 'quick-practice-emotion-display' : ''}>
+        <div className={`emotion-display${mode === 'quickPractice' ? ' quick-practice-emotion-display' : ''}`}>
                 {isAnalyzing ? (
                     <small>Analizando emoción...</small>
                 ) : (
@@ -493,7 +493,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
                 )}
             </div>
             
-            <div className="lyrics-display" className={mode === 'quickPractice' ? 'quick-practice-lyrics-display' : ''}>
+            <div className={`lyrics-display${mode === 'quickPractice' ? ' quick-practice-lyrics-display' : ''}`}>
                 {mode === 'learn' ? (
             showAllLyrics ? (
                 <>
@@ -515,11 +515,12 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
                         if (!info) return null; // Handle case where info might not be found
                         return (
                             <p key={p.id} style={{ marginBottom: '10px', color: info.color }}>
-                            {p.text.split('\n').map((line, lineIndex) => (
-                                <span key={lineIndex}>{line}<br/></span>
-                            ))}
-                        </p>
-                    });}
+                                {p.text.split('\n').map((line, lineIndex) => (
+                                    <span key={lineIndex}>{line}<br/></span>
+                                ))}
+                            </p>
+                        );
+                    })}
                 </div>
                     </div>
                 </>
@@ -624,13 +625,13 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
                     )}
                 </div>
             ) : (
-                <div className="practice-controls" className={mode === 'quickPractice' ? 'quick-practice-controls' : ''}>
-                    <div className="mode-selector" className={mode === 'quickPractice' ? 'quick-practice-mode-selector' : ''}>
+                <div className={`practice-controls${mode === 'quickPractice' ? ' quick-practice-controls' : ''}`}>
+                    <div className={`mode-selector${mode === 'quickPractice' ? ' quick-practice-mode-selector' : ''}`}>
                         <button onClick={() => setInputMode('text')} className={inputMode === 'text' ? 'active' : ''}>Escribir</button>
                         <button onClick={() => setInputMode('audio')} className={inputMode === 'audio' ? 'active' : ''}>Cantar</button>
                     </div>
                     {inputMode === 'text' ? (
-                        <form onSubmit={handleTextSubmit} className="text-input-form" className={mode === 'quickPractice' ? 'quick-practice-text-input-form' : ''}>
+                        <form onSubmit={handleTextSubmit} className={`text-input-form${mode === 'quickPractice' ? ' quick-practice-text-input-form' : ''}`}>
                             <textarea
                                 value={userInput}
                                 onChange={(e) => {
