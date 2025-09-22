@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/songs/';
+const API_URL = process.env.REACT_APP_API_URL + '/api/songs/';
 
 // Obtener todas las canciones del usuario
 const getSongs = async (token) => {
