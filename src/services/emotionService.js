@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/emotion';
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 /**
  * Analiza la letra completa de una canción para obtener su contexto emocional.
@@ -9,7 +9,7 @@ const API_URL = 'http://localhost:5000/api/emotion';
  */
 const analyzeSongContext = async (fullText) => {
     try {
-        const { data } = await axios.post(`${API_URL}/context`, { text: fullText });
+        const { data } = await axios.post(`${API_BASE_URL}/api/emotion/context`, { text: fullText });
         return data.context;
     } catch (error) {
         console.error('Error al analizar el contexto de la canción:', error);
@@ -25,7 +25,7 @@ const analyzeSongContext = async (fullText) => {
  */
 const analyzeEmotion = async (text, context = []) => {
   try {
-    const { data } = await axios.post(API_URL, { text, context });
+    const { data } = await axios.post(API_BASE_URL + '/api/emotion', { text, context });
     return data.emotion;
   } catch (error) {
     console.error('Error al analizar la emoción del párrafo:', error);
