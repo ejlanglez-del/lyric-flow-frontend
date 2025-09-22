@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL + '/api/songs/';
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 // Obtener todas las canciones del usuario
 const getSongs = async (token) => {
@@ -9,7 +9,7 @@ const getSongs = async (token) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const { data } = await axios.get(API_URL, config);
+  const { data } = await axios.get(API_BASE_URL + '/api/songs/', config);
   return data;
 };
 
@@ -20,7 +20,7 @@ const createSong = async (songData, token) => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const { data } = await axios.post(API_URL, songData, config);
+      const { data } = await axios.post(API_BASE_URL + '/api/songs/', songData, config);
       return data;
 }
 
@@ -31,7 +31,7 @@ const deleteSong = async (songId, token) => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const { data } = await axios.delete(API_URL + songId, config);
+      const { data } = await axios.delete(API_BASE_URL + '/api/songs/' + songId, config);
       return data;
 }
 
@@ -42,7 +42,7 @@ const updateSongRepetitionCount = async (songId, token) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const { data } = await axios.put(API_URL + songId + '/complete', {}, config);
+  const { data } = await axios.put(API_BASE_URL + '/api/songs/' + songId + '/complete', {}, config);
   return data;
 };
 
@@ -63,7 +63,7 @@ const updateSong = async (songData, token) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const { data } = await axios.put(API_URL + songData._id, songData, config);
+  const { data } = await axios.put(API_BASE_URL + '/api/songs/' + songData._id, songData, config);
   return data;
 };
 
