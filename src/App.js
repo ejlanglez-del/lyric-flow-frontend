@@ -13,6 +13,7 @@ import UsernamePromptScreen from './components/UsernamePromptScreen'; // Import 
 import songService from './services/songService'; // Import songService
 import './App.css';
 
+
 function App() {
   const { user, loading, logout } = useContext(AuthContext);
   const [authScreen, setAuthScreen] = useState('login');
@@ -40,13 +41,11 @@ function App() {
     setSelectedSong(song);
   };
 
-  const SRS_SCHEDULE_HOURS = [3, 24, 48, 120, 360, 720, 2160, 4320, 12960]; // In hours
-
   const calculateNextExamTime = React.useCallback((level, lastPassedTimestamp) => {
     if (level === 0) return Date.now(); // Level 0 is always available
     const hoursToWait = SRS_SCHEDULE_HOURS[level - 1] || SRS_SCHEDULE_HOURS[SRS_SCHEDULE_HOURS.length - 1];
     return lastPassedTimestamp + (hoursToWait * 60 * 60 * 1000);
-  }, [SRS_SCHEDULE_HOURS]);
+  }, []); // SRS_SCHEDULE_HOURS removed from dependencies
 
   const handleExamComplete = (songId) => {
     const key = 'lyricFlow_examLevels';
