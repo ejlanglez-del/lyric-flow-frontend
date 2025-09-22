@@ -644,7 +644,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
                                 rows="3"
                             />
                             <button type="submit" className="btn">Comprobar</button>
-                            <button type="button" onClick={() => { /* handleHint logic here */ }} className="btn secondary-btn hint-button">
+                            <button type="button" onClick={handleHint} className="btn secondary-btn hint-button">
                                 Pista
                             </button>
                         </form>

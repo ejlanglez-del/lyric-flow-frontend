@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { getErrors, saveErrors, clearParagraphErrors } from '../services/localStorageService';
+import { getErrors, clearParagraphErrors } from '../services/localStorageService';
 import songService from '../services/songService';
 import AuthContext from '../context/AuthContext';
 import MemorizeScreen from './MemorizeScreen'; // Reutilizar MemorizeScreen para la práctica
@@ -132,7 +132,7 @@ function QuickPracticeScreen({ onBack }) {
     useEffect(() => {
         console.log('useEffect en QuickPracticeScreen disparado. Llamando a fetchQuickPracticeContent.');
         fetchQuickPracticeContent();
-    }, [user]);
+    }, [user, fetchQuickPracticeContent]);
 
     const handleFinishPracticeParagraph = () => {
         // When a paragraph is finished (correctly typed), advance to the next one
