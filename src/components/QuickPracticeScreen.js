@@ -26,86 +26,86 @@ function QuickPracticeScreen({ onBack }) {
     const [quickPracticeSongs, setQuickPracticeSongs] = useState([]);
     const [currentPracticeSongIndex, setCurrentPracticeSongIndex] = useState(0);
 
-    const fetchQuickPracticeContent = React.useCallback(async () => {
-        console.log('fetchQuickPracticeContent iniciado.');
-        if (!user) {
-            console.log('Usuario no autenticado, deteniendo fetchQuickPracticeContent.');
-            setError('Usuario no autenticado.');
-            setLoading(false);
-            return;
-        }
+        const fetchQuickPracticeContent = React.useCallback(async () => {
+            console.log('fetchQuickPracticeContent iniciado.');
+            if (!user) {
+                console.log('Usuario no autenticado, deteniendo fetchQuickPracticeContent.');
+                setError('Usuario no autenticado.');
+                setLoading(false);
+                return;
+            }
 
-        setLoading(true);
-        setError(null);
-        try {
-            console.log('Obteniendo errores de localStorage...');
-            const allErrors = getErrors();
-            console.log('Errores obtenidos:', allErrors);
+            setLoading(true);
+            setError(null);
+            try {
+                console.log('Obteniendo errores de localStorage...');
+                const allErrors = getErrors();
+                console.log('Errores obtenidos:', allErrors);
 
-            console.log('Obteniendo canciones del servicio...');
-            const allSongs = await songService.getSongs(user.token);
-            console.log('Canciones obtenidas:', allSongs);
-            const songMap = new Map(allSongs.map(s => [s._id, s]));
+                console.log('Obteniendo canciones del servicio...');
+                const allSongs = await songService.getSongs(user.token);
+                console.log('Canciones obtenidas:', allSongs);
+                const songMap = new Map(allSongs.map(s => [s._id, s]));
 
-            const prioritizedParagraphs = [];
+                const prioritizedParagraphs = [];
 
-            for (const songId in allErrors) {
-                if (songMap.has(songId)) { // Asegurarse de que la canción existe
-                    const songErrors = allErrors[songId];
-                    const originalLyrics = songMap.get(songId).lyrics;
-                    const paragraphsInSong = originalLyrics.split(/\n\s*\n/).filter(p => p.trim() !== '');
+                for (const songId in allErrors) {
+                    if (songMap.has(songId)) { // Asegurarse de que la canción existe
+                        const songErrors = allErrors[songId];
+                        const originalLyrics = songMap.get(songId).lyrics;
+                        const paragraphsInSong = originalLyrics.split(/\n\s*\n/).filter(p => p.trim() !== '');
 
-                    for (const paragraphId in songErrors) {
-                        const pIdNum = parseInt(paragraphId, 10);
-                        if (paragraphsInSong[pIdNum]) { // Asegurarse de que el párrafo existe
-                            const { errorCount, lastAttemptTimestamp } = songErrors[paragraphId];
-                            const precedingParagraphText = pIdNum > 0 ? paragraphsInSong[pIdNum - 1] : null;
-                            if (errorCount > 0) { // Solo si hay errores
-                                const score = calculatePriorityScore(errorCount, lastAttemptTimestamp);
-                                prioritizedParagraphs.push({
-                                    songId,
-                                    paragraphId: pIdNum,
-                                    text: paragraphsInSong[pIdNum],
-                                    precedingParagraphText,
-                                    score,
-                                    errorCount,
-                                    lastAttemptTimestamp
-                                });
+                        for (const paragraphId in songErrors) {
+                            const pIdNum = parseInt(paragraphId, 10);
+                            if (paragraphsInSong[pIdNum]) { // Asegurarse de que el párrafo existe
+                                const { errorCount, lastAttemptTimestamp } = songErrors[paragraphId];
+                                const precedingParagraphText = pIdNum > 0 ? paragraphsInSong[pIdNum - 1] : null;
+                                if (errorCount > 0) { // Solo si hay errores
+                                    const score = calculatePriorityScore(errorCount, lastAttemptTimestamp);
+                                    prioritizedParagraphs.push({
+                                        songId,
+                                        paragraphId: pIdNum,
+                                        text: paragraphsInSong[pIdNum],
+                                        precedingParagraphText,
+                                        score,
+                                        errorCount,
+                                        lastAttemptTimestamp
+                                    });
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            console.log('Párrafos priorizados (antes de ordenar):', prioritizedParagraphs);
-            // Ordenar por puntuación de mayor a menor
-            prioritizedParagraphs.sort((a, b) => b.score - a.score);
-            console.log('Párrafos priorizados (después de ordenar):', prioritizedParagraphs);
+                console.log('Párrafos priorizados (antes de ordenar):', prioritizedParagraphs);
+                // Ordenar por puntuación de mayor a menor
+                prioritizedParagraphs.sort((a, b) => b.score - a.score);
+                console.log('Párrafos priorizados (después de ordenar):', prioritizedParagraphs);
 
-            // Seleccionar los N párrafos más difíciles
-            const selectedParagraphs = prioritizedParagraphs.slice(0, QUICK_PRACTICE_LIMIT);
-            console.log('Párrafos seleccionados:', selectedParagraphs);
+                // Seleccionar los N párrafos más difíciles
+                const selectedParagraphs = prioritizedParagraphs.slice(0, QUICK_PRACTICE_LIMIT);
+                console.log('Párrafos seleccionados:', selectedParagraphs);
 
-            // Agrupar por canción para pasarlos a MemorizeScreen
-            const songsForPractice = selectedParagraphs.map(p => ({
-                _id: p.songId,
-                lyrics: p.text, // Solo el párrafo específico
-                originalParagraphIndex: p.paragraphId, // El índice original del párrafo en la canción
-                precedingParagraphText: p.precedingParagraphText, // Texto del párrafo anterior
-                title: songMap.get(p.songId)?.title || 'Canción Desconocida',
-                artist: songMap.get(p.songId)?.artist || 'Artista Desconocido',
-            }));
+                // Agrupar por canción para pasarlos a MemorizeScreen
+                const songsForPractice = selectedParagraphs.map(p => ({
+                    _id: p.songId,
+                    lyrics: p.text, // Solo el párrafo específico
+                    originalParagraphIndex: p.paragraphId, // El índice original del párrafo en la canción
+                    precedingParagraphText: p.precedingParagraphText, // Texto del párrafo anterior
+                    title: songMap.get(p.songId)?.title || 'Canción Desconocida',
+                    artist: songMap.get(p.songId)?.artist || 'Artista Desconocido',
+                }));
             
-            console.log('Canciones para práctica rápida (final):', songsForPractice);
-            setQuickPracticeSongs(songsForPractice);
-            setLoading(false);
+                console.log('Canciones para práctica rápida (final):', songsForPractice);
+                setQuickPracticeSongs(songsForPractice);
+                setLoading(false);
 
-        } catch (err) {
-            console.error('Error al cargar contenido para práctica rápida:', err);
-            setError('No se pudo cargar el contenido para la práctica rápida.');
-            setLoading(false);
-        }
-    };
+            } catch (err) {
+                console.error('Error al cargar contenido para práctica rápida:', err);
+                setError('No se pudo cargar el contenido para la práctica rápida.');
+                setLoading(false);
+            }
+        }, [user]);
 
     const handleMarkAsMastered = () => {
         if (currentSongForPractice) {
