@@ -148,7 +148,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
         setUserInput('');
         setFeedback('');
         setDiffResult([]);
-        setHintUsed(false);
+    // setHintUsed(false); // removed, no longer used
         setEmotions([]);
         setPracticeDirection('forward'); // Reset practice direction
         setShowAllLyrics(true); // Reset showAllLyrics to true
@@ -320,7 +320,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
             trackParagraphCorrect(songId, paragraphIdToTrack); // Track correct attempt
             setFeedback('correct');
             setDiffResult([]);
-            setHintUsed(false);
+            // setHintUsed(false); // removed, no longer used
             setTimeout(() => {
                 if (mode === 'quickPractice') {
                     onFinish(); // In quick practice, finish after one correct paragraph
@@ -382,7 +382,6 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
         if (hintWord) {
             const newUserInput = userInput.length > 0 && !userInput.endsWith(' ') ? userInput + ' ' + hintWord : userInput + hintWord;
             setUserInput(newUserInput);
-            setHintUsed(true);
             setFeedback('');
             setDiffResult([]);
         }
