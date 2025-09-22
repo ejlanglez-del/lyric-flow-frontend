@@ -123,8 +123,6 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
 
     const [layoutMode, setLayoutMode] = useState('single'); // Default to single column
 
-    const [layoutMode, setLayoutMode] = useState('single'); // Default to single column
-
     // Emotion analysis state
     const [emotions, setEmotions] = useState([]);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -521,7 +519,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
                                 <span key={lineIndex}>{line}<br/></span>
                             ))}
                         </p>
-                    ))}
+                    );})
                 </div>
                     </div>
                 </>
