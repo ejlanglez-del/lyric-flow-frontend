@@ -121,6 +121,8 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
     const [editingEmojiParagraphIndex, setEditingEmojiParagraphIndex] = useState(null);
     const [editingEmojiType, setEditingEmojiType] = useState(null); // 'start' or 'end'
 
+    const [layoutMode, setLayoutMode] = useState('single'); // Default to single column
+
     // Emotion analysis state
     const [emotions, setEmotions] = useState([]);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -508,8 +510,11 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
                             </button>
                         </div>
                 <div className="full-lyrics-display" style={{ whiteSpace: 'pre-wrap' }}>
-                    {paragraphs.map((p, pIndex) => (
-                        <p key={p.id} style={{ marginBottom: '10px', color: info.color }}>
+                    {paragraphs.map((p, pIndex) => {
+                        const info = paragraphRenderInfo.get(p.id);
+                        if (!info) return null; // Handle case where info might not be found
+                        return (
+                            <p key={p.id} style={{ marginBottom: '10px', color: info.color }}>
                             {p.text.split('\n').map((line, lineIndex) => (
                                 <span key={lineIndex}>{line}<br/></span>
                             ))}
