@@ -115,7 +115,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
     const [userInput, setUserInput] = useState('');
     const [feedback, setFeedback] = useState('');
     const [diffResult, setDiffResult] = useState([]);
-    const [hintUsed, setHintUsed] = useState(false); // Restored for use in handlers
+    // Removed unused hintUsed state to fix ESLint error
     const [practiceDirection, setPracticeDirection] = useState('forward'); // 'forward' or 'reverse'
     const [showAllLyrics, setShowAllLyrics] = useState(true); // New state to control showing all lyrics or paginated
     const [editingEmojiParagraphIndex, setEditingEmojiParagraphIndex] = useState(null);
