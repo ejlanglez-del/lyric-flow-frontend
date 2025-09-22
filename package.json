@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "set \"REACT_APP_API_URL=https://lyric-flow-backend.onrender.com\" && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
