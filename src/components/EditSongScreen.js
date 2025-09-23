@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
-import AuthContext from '../context/AuthContext';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import songService from '../services/songService';
 
 function EditSongScreen({ song, onUpdate, onCancel }) {
   const [title, setTitle] = useState(song.title || '');
   const [artist, setArtist] = useState(song.artist || '');
   const [lyrics, setLyrics] = useState(song.lyrics || '');
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
   useEffect(() => {

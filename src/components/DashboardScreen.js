@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import AuthContext from '../context/AuthContext';
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import songService from '../services/songService'; // Usar el servicio centralizado
 
 // Añadir la nueva prop onNavigateToSongList
@@ -7,7 +7,7 @@ function DashboardScreen({ onNavigateToSongList, onNavigateToQuickPractice, onNa
   const [title, setTitle] = useState('');
   const [artist, setArtist] = useState('');
   const [lyrics, setLyrics] = useState('');
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [addSuccess, setAddSuccess] = useState(false);
 
   const addSong = async (e) => {
@@ -41,7 +41,9 @@ function DashboardScreen({ onNavigateToSongList, onNavigateToQuickPractice, onNa
 
   return (
     <div className="dashboard-screen">
-
+      {user && user.username && (
+        <h2 style={{ marginBottom: '20px', color: '#fff' }}>¡Hola, {user.username}!</h2>
+      )}
 
       {/* Contenedor para los botones de navegación/acción */}
 

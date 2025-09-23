@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import AuthContext from '../context/AuthContext';
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import songService from '../services/songService';
 import CountdownTimer from './CountdownTimer';
 
@@ -9,7 +9,7 @@ function SongListScreen({ songs, onSelectSong, onBack, onSelectForLearning, onDe
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('asc'); // Default to Repasos (Menor a Mayor)
   const [showPracticeModeSelection, setShowPracticeModeSelection] = useState(null); // Stores the song for which to show mode selection
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   // Handler to delete a song
   const handleDelete = async (id) => {

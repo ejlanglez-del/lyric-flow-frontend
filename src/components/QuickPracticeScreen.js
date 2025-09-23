@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getErrors, clearParagraphErrors } from '../services/localStorageService';
 import songService from '../services/songService';
-import AuthContext from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import MemorizeScreen from './MemorizeScreen'; // Reutilizar MemorizeScreen para la práctica
 
 const QUICK_PRACTICE_LIMIT = 5; // Número de párrafos a practicar en una sesión rápida
@@ -20,7 +20,7 @@ const calculatePriorityScore = (errorCount, lastAttemptTimestamp) => {
 };
 
 function QuickPracticeScreen({ onBack }) {
-    const { user } = useContext(AuthContext);
+    const { user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [quickPracticeSongs, setQuickPracticeSongs] = useState([]);

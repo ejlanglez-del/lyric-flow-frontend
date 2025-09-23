@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import AuthContext from './context/AuthContext';
+import React, { useState } from 'react';
+import { useAuth } from './context/AuthContext'; // Use useAuth hook
 import LoginScreen from './components/LoginScreen';
 import RegisterScreen from './components/RegisterScreen';
 import DashboardScreen from './components/DashboardScreen';
@@ -8,268 +8,79 @@ import SongListScreen from './components/SongListScreen';
 import QuickPracticeScreen from './components/QuickPracticeScreen'; // Import the new component
 import EditSongScreen from './components/EditSongScreen'; // Import EditSongScreen
 import UsernamePromptScreen from './components/UsernamePromptScreen'; // Import UsernamePromptScreen
+import SettingsMenu from './components/SettingsMenu'; // Import SettingsMenu
 
 
-import songService from './services/songService'; // Import songService
 import './App.css';
 
 
 function App() {
-  const { user, loading, logout } = useContext(AuthContext);
+  const { user, logout } = useAuth(); // Use useAuth hook
   const [authScreen, setAuthScreen] = useState('login');
   const [selectedSong, setSelectedSong] = useState(null);
   const [mainView, setMainView] = useState('dashboard');
-  const [screenMode, setScreenMode] = useState('practice'); // 'practice' or 'learn'
-  const [songs, setSongs] = useState([]); // Initialize songs state
+
+
   const [editingSong, setEditingSong] = useState(null); // New state for editing song
-  const [showUsernamePrompt, setShowUsernamePrompt] = useState(false); // New state for username prompt
+    const [showUsernamePrompt, setShowUsernamePrompt] = useState(false); // New state for username prompt
+    const [showSettingsMenu, setShowSettingsMenu] = useState(false); // New state for settings menu
+  
+    // Spaced Repetition Schedule in hours. L1: 3h, L2: 1d, L3: 2d, L4: 5d, L5: 15d, L6: 1m, L7: 3m, L8: 6m, L9: 1.5y
 
-  // Spaced Repetition Schedule in hours. L1: 3h, L2: 1d, L3: 2d, L4: 5d, L5: 15d, L6: 1m, L7: 3m, L8: 6m, L9: 1.5y
-  const SRS_SCHEDULE_HOURS = React.useMemo(() => [3, 24, 48, 120, 360, 720, 2160, 4320, 13140], []);
+  
+    const toggleSettingsMenu = () => {
+      setShowSettingsMenu(prev => !prev);
+    };
 
-
-  const handleNavigateToQuickPractice = () => {
-    setMainView('quickPractice');
-  };
-
-  const handleNavigateToExam = () => {
-    setMainView('examSongList');
-  };
-
-  const handleStartExam = (song) => {
-    setScreenMode('exam');
-    setSelectedSong(song);
-  };
-
-  const calculateNextExamTime = React.useCallback((level, lastPassedTimestamp) => {
-    if (level === 0) return Date.now(); // Level 0 is always available
-    const hoursToWait = SRS_SCHEDULE_HOURS[level - 1] || SRS_SCHEDULE_HOURS[SRS_SCHEDULE_HOURS.length - 1];
-    return lastPassedTimestamp + (hoursToWait * 60 * 60 * 1000);
-  }, [SRS_SCHEDULE_HOURS]); // SRS_SCHEDULE_HOURS added back to dependencies
-
-  const handleExamComplete = (songId) => {
-    const key = 'lyricFlow_examLevels';
-    const levels = JSON.parse(localStorage.getItem(key) || '{}');
-    const songInfo = levels[songId] || { level: 0, lastPassed: 0 };
-    
-    songInfo.level += 1;
-    songInfo.lastPassed = Date.now();
-    levels[songId] = songInfo;
-    localStorage.setItem(key, JSON.stringify(levels));
-
-    setSongs(prevSongs =>
-        prevSongs.map(song => {
-            if (song._id === songId) {
-                const nextExamTime = calculateNextExamTime(songInfo.level, songInfo.lastPassed);
-                return { ...song, examLevel: songInfo.level, nextExamAvailableAt: nextExamTime };
-            }
-            return song;
-        })
-    );
-  };
-
-  const handleExamFailed = (songId) => {
-    const key = 'lyricFlow_examLevels';
-    const levels = JSON.parse(localStorage.getItem(key) || '{}');
-    const songInfo = levels[songId] || { level: 0, lastPassed: 0 };
-
-    if (songInfo.level > 0) {
-        songInfo.level -= 1;
-    }
-    
-    levels[songId] = songInfo;
-    localStorage.setItem(key, JSON.stringify(levels));
-
-    setSongs(prevSongs =>
-        prevSongs.map(song => {
-            if (song._id === songId) {
-                // Recalculate next available time based on the new, lower level
-                const nextExamTime = calculateNextExamTime(songInfo.level, songInfo.lastPassed);
-                return { ...song, examLevel: songInfo.level, nextExamAvailableAt: nextExamTime };
-            }
-            return song;
-        })
-    );
-  };
-
-  // Fetch songs when user is available
-  useEffect(() => {
-    const fetchSongs = async () => {
-      if (user && user.token) { // Ensure user is logged in and has a token
-        // Check if username is missing for existing users
-        if (!user.username) {
-          setShowUsernamePrompt(true);
-          return; // Don't load songs until username is set
-        }
-
-        try {
-          const data = await songService.getSongs(user.token);
-          const levels = JSON.parse(localStorage.getItem('lyricFlow_examLevels') || '{}');
-          const songsWithData = data.map(song => {
-            const songInfo = levels[song._id] || { level: 0, lastPassed: 0 };
-            const nextExamTime = calculateNextExamTime(songInfo.level, songInfo.lastPassed);
-            return {
-                ...song,
-                completedSessions: song.completedSessions || 0,
-                examLevel: songInfo.level,
-                nextExamAvailableAt: nextExamTime
-            };
-          });
-          setSongs(songsWithData);
-        } catch (error) {
-          console.error('Error al obtener canciones:', error);
-        }
+    const renderContent = () => {
+      switch (mainView) {
+        case 'dashboard':
+          return <DashboardScreen setMainView={setMainView} setSelectedSong={setSelectedSong} setEditingSong={setEditingSong} />;
+        case 'memorize':
+          return <MemorizeScreen song={selectedSong} setMainView={setMainView} />;
+        case 'songList':
+          return <SongListScreen setSelectedSong={setSelectedSong} setMainView={setMainView} setEditingSong={setEditingSong} />;
+        case 'quickPractice':
+          return <QuickPracticeScreen setMainView={setMainView} />;
+        case 'editSong':
+          return <EditSongScreen song={editingSong} setMainView={setMainView} />;
+        case 'login':
+          return <LoginScreen setAuthScreen={setAuthScreen} setShowUsernamePrompt={setShowUsernamePrompt} />;
+        case 'register':
+          return <RegisterScreen setAuthScreen={setAuthScreen} setShowUsernamePrompt={setShowUsernamePrompt} />;
+        default:
+          return <DashboardScreen setMainView={setMainView} setSelectedSong={setSelectedSong} setEditingSong={setEditingSong} />;
       }
     };
-    fetchSongs();
-  }, [user, calculateNextExamTime]);
-
-  const handleSelectSongForMode = (song, mode = 'practice') => {
-    setScreenMode(mode);
-    setSelectedSong(song);
-  }
-
-  const handleSelectForLearning = (song) => {
-    setScreenMode('learn');
-    setSelectedSong(song);
-  }
-
-  const handleFinish = () => {
-    setSelectedSong(null); // Clear selected song first
-    setMainView('songList'); // Then navigate to song list
-  }
-
-  const handleRepetitionComplete = async (songId) => {
-    // Optimistically update local state
-    setSongs(prevSongs =>
-      prevSongs.map(song =>
-        song._id === songId ? { ...song, completedSessions: (song.completedSessions || 0) + 1 } : song
-      )
+  
+    // ... (rest of the code)
+  
+    return (
+      <div className="App">
+        <header style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '15px 0', position: 'relative'}}>
+          {user && (
+            <button onClick={toggleSettingsMenu} style={{position: 'absolute', top: '15px', left: '15px', color: '#6c757d', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.5rem'}}>
+              ⚙️
+            </button>
+          )}
+          <h1>Lyric-Flow</h1>
+          {user && user.name && (
+            <span style={{color: '#6c757d', marginTop: '5px'}}>Hola {user.name}!</span>
+          )}
+          {user && (
+            <button onClick={() => { if (window.confirm('¿Seguro que quieres cerrar sesión?')) logout(); }} style={{position: 'absolute', top: '15px', right: '15px', color: '#6c757d', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline'}}>
+              Cerrar Sesión
+            </button>
+          )}
+        </header>
+        <main>
+          {showSettingsMenu && user && (
+            <SettingsMenu onClose={toggleSettingsMenu} onUpdateUsername={user.name} /> // Pass user.name for initial value
+          )}
+          {renderContent()}
+        </main>
+      </div>
     );
-    // Update backend
-    try {
-      if (user) {
-        await songService.updateSongRepetitionCount(songId, user.token);
-        // Re-fetch songs to ensure local state is in sync with backend
-        const data = await songService.getSongs(user.token);
-        setSongs(data.map(song => ({ ...song, completedSessions: song.completedSessions || 0 })));
-      }
-    } catch (error) {
-      console.error('Error al actualizar el contador de repeticiones en el backend:', error);
-      // Revert optimistic update if backend update fails
-      setSongs(prevSongs =>
-        prevSongs.map(song =>
-          song._id === songId ? { ...song, completedSessions: (song.completedSessions || 0) - 1 } : song
-        )
-      );
-    }
-  };
-
-  const handleUpdateSong = (updatedSong) => {
-    setSongs(prevSongs => prevSongs.map(s => s._id === updatedSong._id ? updatedSong : s));
-    setEditingSong(null); // Exit edit mode
-  };
-
-  const handleEditSong = (song) => {
-    setEditingSong(song); // Enter edit mode with the selected song
-  };
-
-  const handleCancelEdit = () => {
-    setEditingSong(null); // Exit edit mode
-  };
-
-  const handleDeleteSong = async (songId) => {
-    try {
-      if (user) {
-        await songService.deleteSong(songId, user.token);
-        setSongs(prevSongs => prevSongs.filter(song => song._id !== songId));
-      }
-    } catch (error) {
-      console.error('Error al eliminar canción:', error);
-    }
-  };
-
-  if (loading) {
-    return <h1>Cargando...</h1>;
   }
-
-  const renderContent = () => {
-    if (!user) {
-      return authScreen === 'login' ? 
-        <LoginScreen onNavigateToRegister={() => setAuthScreen('register')} /> : 
-        <RegisterScreen onNavigateToLogin={() => setAuthScreen('login')} />
-    }
-
-    if (showUsernamePrompt) {
-      return <UsernamePromptScreen onUsernameSet={() => setShowUsernamePrompt(false)} />;
-    }
-
-    if (selectedSong) {
-      return <MemorizeScreen 
-               lyrics={selectedSong.lyrics} 
-               songId={selectedSong._id} // Pasar el ID de la canción
-               onFinish={handleFinish} 
-               onBack={handleFinish} 
-               mode={screenMode} // Pasar el modo actual
-               onRepetitionComplete={handleRepetitionComplete} // Pasar la función de actualización
-               onExamComplete={handleExamComplete}
-               onExamFailed={handleExamFailed}
-             />
-    }
-
-    if (editingSong) { // New condition for editing
-      return <EditSongScreen 
-               song={editingSong} 
-               onUpdate={handleUpdateSong} 
-               onCancel={handleCancelEdit} 
-             />
-    }
-
-    if (mainView === 'dashboard') {
-        return <DashboardScreen songs={songs} onNavigateToSongList={() => setMainView('songList')} onNavigateToQuickPractice={handleNavigateToQuickPractice} onNavigateToExam={handleNavigateToExam} />
-    }
-
-    if (mainView === 'examSongList') {
-      return <SongListScreen 
-               songs={songs}
-               onSelectSong={handleStartExam}
-               onBack={() => setMainView('dashboard')}
-               isExamMode={true}
-             />
-    }
-
-    if (mainView === 'quickPractice') {
-      return <QuickPracticeScreen onBack={() => setMainView('dashboard')} />
-    }
-
-    if (mainView === 'songList') {
-        return <SongListScreen 
-                 songs={songs} // Pasar las canciones desde el estado de App
-                 onSelectSong={handleSelectSongForMode} // Use the new generic handler
-                 onSelectForLearning={handleSelectForLearning} // Pasar el nuevo handler
-                 onBack={() => setMainView('dashboard')} 
-                 onDeleteSong={handleDeleteSong} // Pasar la función para eliminar canciones
-                 onEditSong={handleEditSong} // Pass the new handler for editing
-               />
-    }
-
-    return <DashboardScreen onNavigateToSongList={() => setMainView('songList')} />
-  }
-
-  return (
-    <div className="App">
-      <header style={{display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative'}}>
-        <h1>Lyric-Flow</h1>
-        {user && (
-          <button onClick={() => { if (window.confirm('¿Seguro que quieres cerrar sesión?')) logout(); }} style={{position: 'absolute', top: '15px', right: '15px', color: '#6c757d', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline'}}>
-            Cerrar Sesión
-          </button>
-        )}
-      </header>
-                <main>
-                  {renderContent()}
-                </main>    </div>
-  );
-}
-
-export default App;
+  
+  export default App;

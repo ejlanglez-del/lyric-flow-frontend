@@ -1,12 +1,12 @@
-import React, { useState, useContext } from 'react';
-import AuthContext from '../context/AuthContext';
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import './LoginScreen.css'; // Import the CSS file
 
 function LoginScreen({ onNavigateToRegister }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null); // State for error messages
-  const { login } = useContext(AuthContext);
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => { // Made handleSubmit async
     e.preventDefault();

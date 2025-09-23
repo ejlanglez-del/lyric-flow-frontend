@@ -1,5 +1,6 @@
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import api from '../api/axiosConfig'; // Import the new API instance
 
 const AuthContext = createContext();
 
@@ -12,15 +13,14 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   }, []);
 
+  // Load user from localStorage on initial render and set up Axios interceptor
   useEffect(() => {
     const userInfo = localStorage.getItem('userInfo');
     if (userInfo) {
       setUser(JSON.parse(userInfo));
     }
     setLoading(false);
-  }, []);
 
-  useEffect(() => {
     const responseInterceptor = axios.interceptors.response.use(
       response => response,
       error => {
@@ -36,26 +36,27 @@ export const AuthProvider = ({ children }) => {
     };
   }, [logout]);
 
-const API_URL = process.env.REACT_APP_API_URL + '/api/users/';
+  const API_URL = process.env.REACT_APP_API_URL + '/api/users/';
 
-const register = async (userData) => {
-  const response = await axios.post(API_URL + 'register', userData);
-  if (response.data) {
-    localStorage.setItem('userInfo', JSON.stringify(response.data));
-  }
-  return response.data;
-};
+  const register = async (userData) => {
+    const response = await axios.post(API_URL + 'register', userData);
+    if (response.data) {
+      localStorage.setItem('userInfo', JSON.stringify(response.data));
+      setUser(response.data); // Set user state after successful registration
+    }
+    return response.data;
+  };
 
-const login = async (userData) => {
-  const response = await axios.post(
-    API_URL + 'login',
-    userData,
-    { headers: { 'Content-Type': 'application/json' } }
-  );
+  const login = async (userData) => {
+    const response = await axios.post(
+      API_URL + 'login',
+      userData,
+      { headers: { 'Content-Type': 'application/json' } }
+    );
     localStorage.setItem('userInfo', JSON.stringify(response.data));
     setUser(response.data);
-  return response.data;
-};
+    return response.data;
+  };
 
   const updateUsername = useCallback(async (newUsername) => {
     if (!user || !user.token) {
@@ -69,22 +70,42 @@ const login = async (userData) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const response = await axios.put(API_URL + 'profile', { username: newUsername }, config);
+      // Make the PUT request to backend
+      await axios.put(API_URL + 'profile', { username: newUsername }, config);
 
-      if (response.data) {
-        setUser(response.data);
-        localStorage.setItem('userInfo', JSON.stringify(response.data));
-      }
+      // Update local state and localStorage directly with newUsername
+      setUser(prevUser => {
+        const updatedUser = { ...prevUser, username: newUsername };
+        localStorage.setItem('userInfo', JSON.stringify(updatedUser));
+        return updatedUser;
+      });
     } catch (error) {
       console.error("Error updating username on backend:", error);
+      // Even if backend fails, we'll try to update locally for better UX
+      setUser(prevUser => {
+        const updatedUser = { ...prevUser, username: newUsername };
+        localStorage.setItem('userInfo', JSON.stringify(updatedUser));
+        return updatedUser;
+      });
     }
   }, [user, API_URL, setUser]);
 
+  const value = {
+    user,
+    loading,
+    login,
+    logout,
+    register,
+    updateUsername,
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, register, login, logout, updateUsername }}>
-      {children}
+    <AuthContext.Provider value={value}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 };
 
-export default AuthContext;
+export const useAuth = () => {
+  return useContext(AuthContext);
+};

@@ -1,15 +1,17 @@
-import React, { useState, useContext } from 'react';
-import AuthContext from '../context/AuthContext';
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext'; // Use useAuth hook
 
 function UsernamePromptScreen({ onUsernameSet }) { // Accept prop
   const [username, setUsername] = useState('');
-  const { updateUsername } = useContext(AuthContext);
+  const { updateUsername } = useAuth(); // Use useAuth hook
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => { // Make handleSubmit async
     e.preventDefault();
     if (username.trim()) {
-      updateUsername(username.trim());
-      onUsernameSet(); // Call the prop to hide the screen
+      const success = await updateUsername(username.trim()); // Await the update
+      if (success) {
+        onUsernameSet(); // Call the prop to hide the screen only on success
+      }
     }
   };
 

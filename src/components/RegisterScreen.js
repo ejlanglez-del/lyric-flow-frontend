@@ -1,11 +1,11 @@
-import React, { useState, useContext } from 'react';
-import AuthContext from '../context/AuthContext';
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 function RegisterScreen({ onNavigateToLogin }) {
   const [username, setUsername] = useState(''); // Changed 'name' to 'username'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { register } = useContext(AuthContext);
+  const { register } = useAuth();
 
   const handleSubmit = (e) => {
     e.preventDefault();
