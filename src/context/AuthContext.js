@@ -57,13 +57,28 @@ const login = async (userData) => {
   return response.data;
 };
 
-  const updateUsername = (newUsername) => {
-    setUser(prevUser => {
-      const updatedUser = { ...prevUser, username: newUsername };
-      localStorage.setItem('userInfo', JSON.stringify(updatedUser));
-      return updatedUser;
-    });
-  };
+  const updateUsername = useCallback(async (newUsername) => {
+    if (!user || !user.token) {
+      console.error("User not authenticated to update username.");
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const response = await axios.put(API_URL + 'profile', { username: newUsername }, config);
+
+      if (response.data) {
+        setUser(response.data);
+        localStorage.setItem('userInfo', JSON.stringify(response.data));
+      }
+    } catch (error) {
+      console.error("Error updating username on backend:", error);
+    }
+  }, [user, API_URL, setUser]);
 
   return (
     <AuthContext.Provider value={{ user, loading, register, login, logout, updateUsername }}>
