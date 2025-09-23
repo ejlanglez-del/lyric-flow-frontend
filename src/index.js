@@ -1,3 +1,4 @@
+console.log('APP_VERSION=E-001 ✅');
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './App.css';
