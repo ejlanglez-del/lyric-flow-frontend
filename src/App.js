@@ -7,7 +7,6 @@ import MemorizeScreen from './components/MemorizeScreen';
 import SongListScreen from './components/SongListScreen';
 import QuickPracticeScreen from './components/QuickPracticeScreen'; // Import the new component
 import EditSongScreen from './components/EditSongScreen'; // Import EditSongScreen
-import UsernamePromptScreen from './components/UsernamePromptScreen'; // Import UsernamePromptScreen
 import SettingsMenu from './components/SettingsMenu'; // Import SettingsMenu
 
 
@@ -16,13 +15,11 @@ import './App.css';
 
 function App() {
   const { user, logout } = useAuth(); // Use useAuth hook
-  const [authScreen, setAuthScreen] = useState('login');
   const [selectedSong, setSelectedSong] = useState(null);
   const [mainView, setMainView] = useState('dashboard');
 
 
   const [editingSong, setEditingSong] = useState(null); // New state for editing song
-    const [showUsernamePrompt, setShowUsernamePrompt] = useState(false); // New state for username prompt
     const [showSettingsMenu, setShowSettingsMenu] = useState(false); // New state for settings menu
   
     // Spaced Repetition Schedule in hours. L1: 3h, L2: 1d, L3: 2d, L4: 5d, L5: 15d, L6: 1m, L7: 3m, L8: 6m, L9: 1.5y
@@ -45,9 +42,9 @@ function App() {
         case 'editSong':
           return <EditSongScreen song={editingSong} setMainView={setMainView} />;
         case 'login':
-          return <LoginScreen setAuthScreen={setAuthScreen} setShowUsernamePrompt={setShowUsernamePrompt} />;
+          return <LoginScreen />;
         case 'register':
-          return <RegisterScreen setAuthScreen={setAuthScreen} setShowUsernamePrompt={setShowUsernamePrompt} />;
+          return <RegisterScreen />;
         default:
           return <DashboardScreen setMainView={setMainView} setSelectedSong={setSelectedSong} setEditingSong={setEditingSong} />;
       }
@@ -64,8 +61,8 @@ function App() {
             </button>
           )}
           <h1>Lyric-Flow</h1>
-          {user && user.name && (
-            <span style={{color: '#6c757d', marginTop: '5px'}}>Hola {user.name}!</span>
+          {user && user.username && (
+            <span style={{color: '#6c757d', marginTop: '5px'}}>Hola {user.username}!</span>
           )}
           {user && (
             <button onClick={() => { if (window.confirm('¿Seguro que quieres cerrar sesión?')) logout(); }} style={{position: 'absolute', top: '15px', right: '15px', color: '#6c757d', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline'}}>
@@ -75,7 +72,7 @@ function App() {
         </header>
         <main>
           {showSettingsMenu && user && (
-            <SettingsMenu onClose={toggleSettingsMenu} onUpdateUsername={user.name} /> // Pass user.name for initial value
+            <SettingsMenu onClose={toggleSettingsMenu} onUpdateUsername={user.username} /> // Pass user.username for initial value
           )}
           {renderContent()}
         </main>
