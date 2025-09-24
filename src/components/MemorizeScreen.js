@@ -110,9 +110,15 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
     const [inputMode, setInputMode] = useState('text');
 
     useEffect(() => {
-        const splitResult = lyrics.split(/\n\s*\n/);
-        const filteredResult = splitResult.filter(paragraph => paragraph.trim() !== '');
-        const paragraphsWithId = filteredResult.map((p, index) => ({ id: index, text: p }));
+        let paragraphsWithId = [];
+        if (typeof lyrics === 'string') {
+            const splitResult = lyrics.split(/\n\s*\n/);
+            const filteredResult = splitResult.filter(paragraph => paragraph.trim() !== '');
+            paragraphsWithId = filteredResult.map((p, index) => ({ id: index, text: p }));
+        } else if (Array.isArray(lyrics)) {
+            paragraphsWithId = lyrics.map((lyricItem, index) => ({ id: index, text: lyricItem.paragraph }));
+        }
+
         setParagraphs(paragraphsWithId);
         setCurrentIndex(0);
         setIsComplete(false);
