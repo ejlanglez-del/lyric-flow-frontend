@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './context/AuthContext';
 import songService from './services/songService';
 import SongListScreen from './components/SongListScreen';
@@ -8,6 +8,23 @@ import RegisterScreen from './components/RegisterScreen';
 import MemorizeScreen from './components/MemorizeScreen';
 import QuickPracticeScreen from './components/QuickPracticeScreen';
 import AddSongScreen from './components/AddSongScreen';
+
+const getNextExamDelay = (level) => {
+  const hours = 1000 * 60 * 60;
+  const days = hours * 24;
+  switch (level) {
+    case 1: return hours * 3; // 3 hours
+    case 2: return days * 1;  // 1 day
+    case 3: return days * 2;
+    case 4: return days * 5;
+    case 5: return days * 15;
+    case 6: return days * 30;
+    case 7: return days * 90; // 3 months
+    case 8: return days * 240; // 8 months
+    case 9: return days * 730; // 2 years
+    default: return hours * 3;
+  }
+};
 
 export default function App() {
   const { user, loading } = useAuth();
@@ -20,7 +37,7 @@ export default function App() {
   const [practiceMode, setPracticeMode] = useState('practice');
   const [isExamMode, setIsExamMode] = useState(false);
 
-  const fetchSongs = async () => {
+  const fetchSongs = useCallback(async () => {
     if (user && user.token) {
       try {
         setError(null);
@@ -31,11 +48,11 @@ export default function App() {
         console.error(err);
       }
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchSongs();
-  }, [user]);
+  }, [fetchSongs]);
 
   const navigateTo = (screenName) => setScreen(screenName);
   const backToDashboard = () => {
