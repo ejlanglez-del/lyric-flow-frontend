@@ -168,7 +168,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
         paragraphs.forEach((p, index) => {
             const info = idToRenderInfo.get(p.id);
             if (!info) return;
-            const baseLabel = info.label.replace(/ \(.*\/, '');
+            const baseLabel = info.label.replace(/ \(.*\)/, '');
             if (!locations.has(baseLabel)) {
                 locations.set(baseLabel, []);
             }
@@ -179,8 +179,8 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
             const info1 = idToRenderInfo.get(i);
             const info2 = idToRenderInfo.get(i + 1);
             if (!info1 || !info2) continue;
-            const baseLabel1 = info1.label.replace(/ \(.*\/, '');
-            const baseLabel2 = info2.label.replace(/ \(.*\/, '');
+            const baseLabel1 = info1.label.replace(/ \(.*\)/, '');
+            const baseLabel2 = info2.label.replace(/ \(.*\)/, '');
             const indices1 = locations.get(baseLabel1);
             const indices2 = locations.get(baseLabel2);
             if (indices1 && indices2 && indices1.length > 1 && indices2.length > 1) {
@@ -188,7 +188,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
                 if (isSequence && baseLabel1 !== baseLabel2) {
                     const color1 = info1.color;
                     idToRenderInfo.forEach((currentInfo, id) => {
-                        const currentBaseLabel = currentInfo.label.replace(/ \(.*\/, '');
+                        const currentBaseLabel = currentInfo.label.replace(/ \(.*\)/, '');
                         if (currentBaseLabel === baseLabel2) {
                             currentInfo.label = currentInfo.label.replace(baseLabel2, baseLabel1);
                             currentInfo.color = color1;
