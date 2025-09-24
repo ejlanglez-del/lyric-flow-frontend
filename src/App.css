@@ -233,11 +233,13 @@ textarea {
   font-size: 0.8rem; /* Even smaller font size */
 }
 
-.song-item .btn {
-  margin-top: 5px;
-  margin-right: 5px;
-}
-
 .song-item .btn:last-child {
   margin-right: 0;
+}
+
+.highlighted-keyword {
+  background-color: #ffc107; /* Un amarillo ámbar */
+  color: #212529; /* Texto oscuro para contraste */
+  padding: 2px 4px;
+  border-radius: 4px;
 }
