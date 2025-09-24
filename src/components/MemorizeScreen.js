@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { diffWords } from 'diff';
 import ProgressBar from './ProgressBar';
 import emotionService from '../services/emotionService';
-import { trackParagraphAttempt, trackParagraphError, trackParagraphCorrect } from '../services/localStorageService';
+import songService from '../services/songService';
+import { useAuth } from '../context/AuthContext';
 
 const SPANISH_STOP_WORDS = new Set([
     "el", "la", "los", "las", "un", "una", "unos", "unas", "y", "o", "pero", "mas", "más",
@@ -92,6 +93,7 @@ const getEmotionColor = (emotion) => {
 };
 
 function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, onRepetitionComplete, originalParagraphIndexForTracking = null, onExamComplete, onExamFailed }) {
+    const { user } = useAuth();
     const [paragraphs, setParagraphs] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isComplete, setIsComplete] = useState(false);
@@ -166,7 +168,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
         paragraphs.forEach((p, index) => {
             const info = idToRenderInfo.get(p.id);
             if (!info) return;
-            const baseLabel = info.label.replace(/ \(.*\\/, '');
+            const baseLabel = info.label.replace(/ \(.*\/, '');
             if (!locations.has(baseLabel)) {
                 locations.set(baseLabel, []);
             }
@@ -177,8 +179,8 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
             const info1 = idToRenderInfo.get(i);
             const info2 = idToRenderInfo.get(i + 1);
             if (!info1 || !info2) continue;
-            const baseLabel1 = info1.label.replace(/ \(.*\\/, '');
-            const baseLabel2 = info2.label.replace(/ \(.*\\/, '');
+            const baseLabel1 = info1.label.replace(/ \(.*\/, '');
+            const baseLabel2 = info2.label.replace(/ \(.*\/, '');
             const indices1 = locations.get(baseLabel1);
             const indices2 = locations.get(baseLabel2);
             if (indices1 && indices2 && indices1.length > 1 && indices2.length > 1) {
@@ -186,7 +188,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
                 if (isSequence && baseLabel1 !== baseLabel2) {
                     const color1 = info1.color;
                     idToRenderInfo.forEach((currentInfo, id) => {
-                        const currentBaseLabel = currentInfo.label.replace(/ \(.*\\/, '');
+                        const currentBaseLabel = currentInfo.label.replace(/ \(.*\/, '');
                         if (currentBaseLabel === baseLabel2) {
                             currentInfo.label = currentInfo.label.replace(baseLabel2, baseLabel1);
                             currentInfo.color = color1;
@@ -239,15 +241,15 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
         if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
     };
 
-    const handleTextSubmit = (e) => {
+    const handleTextSubmit = async (e) => {
         e.preventDefault();
         if (!userInput) return;
         const paragraphIdToTrack = mode === 'quickPractice' && originalParagraphIndexForTracking !== null ? originalParagraphIndexForTracking : paragraphs[currentIndex].id;
-        trackParagraphAttempt(songId, paragraphIdToTrack);
+        
         const normalizedUserInput = normalizeText(userInput);
         const normalizedTarget = normalizeText(paragraphs[currentIndex].text);
+        
         if (normalizedUserInput === normalizedTarget) {
-            trackParagraphCorrect(songId, paragraphIdToTrack);
             setFeedback('correct');
             setDiffResult([]);
             setTimeout(() => {
@@ -287,7 +289,13 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
                 }
             }, 1000);
         } else {
-            trackParagraphError(songId, paragraphIdToTrack);
+            try {
+                if (user && songId && paragraphIdToTrack !== null) {
+                    await songService.logParagraphError(songId, paragraphIdToTrack, user.token);
+                }
+            } catch (error) {
+                console.error("Failed to log paragraph error:", error);
+            }
             setFeedback('incorrect');
             setDiffResult(diffWords(normalizedTarget, normalizedUserInput));
         }

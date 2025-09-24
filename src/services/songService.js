@@ -13,7 +13,7 @@ const getSongs = async (token) => {
   return data;
 };
 
-// Crear una nueva canción
+// Crear una nueva canciÃ³n
 const createSong = async (songData, token) => {
     const config = {
         headers: {
@@ -24,7 +24,7 @@ const createSong = async (songData, token) => {
       return data;
 }
 
-// Eliminar una canción
+// Eliminar una canciÃ³n
 const deleteSong = async (songId, token) => {
     const config = {
         headers: {
@@ -77,5 +77,32 @@ const completeExam = async (songId, token) => {
   return data;
 };
 
-const songService = { getSongs, createSong, deleteSong, updateSongRepetitionCount, checkDuplicate, updateSong, completeExam };
+const logParagraphError = async (songId, paragraphIndex, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const { data } = await axios.post(
+    `${API_BASE_URL}/api/songs/${songId}/lyrics/${paragraphIndex}/error`,
+    {},
+    config
+  );
+  return data;
+};
+
+const clearParagraphErrors = async (songId, paragraphIndex, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const { data } = await axios.delete(
+    `${API_BASE_URL}/api/songs/${songId}/lyrics/${paragraphIndex}/errors`,
+    config
+  );
+  return data;
+};
+
+const songService = { getSongs, createSong, deleteSong, updateSongRepetitionCount, checkDuplicate, updateSong, completeExam, logParagraphError, clearParagraphErrors };
 export default songService;

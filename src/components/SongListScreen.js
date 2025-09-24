@@ -135,7 +135,7 @@ function SongListScreen({
         ) : (
           filteredAndSortedSongs.map((song) => {
             const isExamAvailable =
-              !song?.nextExamAvailableAt || Date.now() >= song.nextExamAvailableAt; // defensivo
+              !song?.nextExamAvailableAt || Date.now() >= new Date(song.nextExamAvailableAt).getTime();
             return (
               <div
                 key={song?._id || song?.title}
