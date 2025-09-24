@@ -517,8 +517,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
                                 {p.text.split('\n').map((line, lineIndex) => (
                                     <div key={lineIndex}>{highlightKeyWord(line)}</div>
                                 ))}
-                        );
-                    })}
+                            </p>
                 </div>
                     </div>
                 </>
