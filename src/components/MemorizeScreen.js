@@ -518,6 +518,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
                                     <div key={lineIndex}>{highlightKeyWord(line)}</div>
                                 ))}
                             </p>
+                        );
                 </div>
                     </div>
                 </>
