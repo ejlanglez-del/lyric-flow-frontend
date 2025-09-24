@@ -336,7 +336,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
         return <div>Cargando letra...</div>;
     }
 
-    if (isComplete) {
+    if (isComplete && mode !== 'exam') {
         return (
             <div className="completion-screen">
                 <h2>¡Felicidades!</h2>
@@ -355,19 +355,26 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
         if (isComplete) {
             return (
                 <div className="completion-screen">
-                    <h2>¡Examen Completado!</h2>
+                    {feedback === 'correct' ? (
+                        <h2>¡Examen Perfecto!</h2>
+                    ) : (
+                        <h2>Casi lo tienes...</h2>
+                    )}
                     <p>Este es tu resultado:</p>
                     {feedback === 'incorrect' && diffResult.length > 0 && (
-                        <div className="diff-view" style={{ textAlign: 'left', whiteSpace: 'pre-wrap', padding: '10px', border: '1px solid #444', maxHeight: '400px', overflowY: 'auto', backgroundColor: '#222', borderRadius: '8px' }}>
-                            {diffResult.map((part, index) => {
-                                const style = part.added ? { color: '#f48fb1', backgroundColor: '#4a1425' } :
-                                    part.removed ? { color: '#888', textDecoration: 'line-through' } :
-                                    { color: '#7cb342', opacity: 0.8 };
-                                return <span key={index} style={style}>{part.value}</span>;
-                            })}
-                        </div>
+                        <>
+                            <p style={{marginBottom: '1rem'}}>Practicala más e inténtalo de nuevo más tarde.</p>
+                            <div className="diff-view" style={{ textAlign: 'left', whiteSpace: 'pre-wrap', padding: '10px', border: '1px solid #444', maxHeight: '400px', overflowY: 'auto', backgroundColor: '#222', borderRadius: '8px' }}>
+                                {diffResult.map((part, index) => {
+                                    const style = part.added ? { color: '#f48fb1', backgroundColor: '#4a1425' } :
+                                        part.removed ? { color: '#888', textDecoration: 'line-through' } :
+                                        { color: '#7cb342', opacity: 0.8 };
+                                    return <span key={index} style={style}>{part.value}</span>;
+                                })}
+                            </div>
+                        </>
                     )}
-                    {feedback === 'correct' && <p style={{ color: '#7cb342' }}>¡Perfecto! Has escrito la canción sin errores.</p>}
+                    {feedback === 'correct' && <p style={{ color: '#7cb342' }}>¡Felicidades! Has escrito la canción sin errores.</p>}
                     <button onClick={onFinish} className="btn" style={{ marginTop: '20px' }}>Volver</button>
                 </div>
             );
