@@ -86,7 +86,7 @@ function SongListScreen({
   return (
     <div className="song-list-screen">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Tu Biblioteca de Canciones</h2>
+        <h2>Tu Biblioteca de Canciones ({filteredAndSortedSongs.length})</h2>
         <button className="btn secondary-btn" type="button" onClick={handleBack}>
           Volver al Panel
         </button>

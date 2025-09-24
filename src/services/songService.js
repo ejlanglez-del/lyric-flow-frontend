@@ -67,5 +67,15 @@ const updateSong = async (songData, token) => {
   return data;
 };
 
-const songService = { getSongs, createSong, deleteSong, updateSongRepetitionCount, checkDuplicate, updateSong };
+const completeExam = async (songId, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const { data } = await axios.put(API_BASE_URL + '/api/songs/' + songId + '/complete-exam', {}, config);
+  return data;
+};
+
+const songService = { getSongs, createSong, deleteSong, updateSongRepetitionCount, checkDuplicate, updateSong, completeExam };
 export default songService;
