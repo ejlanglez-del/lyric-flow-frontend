@@ -238,8 +238,5 @@ textarea {
 }
 
 .highlighted-keyword {
-  background-color: #ffc107; /* Un amarillo ámbar */
-  color: #212529; /* Texto oscuro para contraste */
-  padding: 2px 4px;
-  border-radius: 4px;
+  color: #ffc107; /* Un amarillo ámbar */
 }
