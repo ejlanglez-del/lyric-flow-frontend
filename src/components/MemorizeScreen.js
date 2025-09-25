@@ -116,7 +116,7 @@ function MemorizeScreen({ lyrics, onFinish, onBack, mode = 'practice', songId, o
             const filteredResult = splitResult.filter(paragraph => paragraph.trim() !== '');
             paragraphsWithId = filteredResult.map((p, index) => ({ id: index, text: p }));
         } else if (Array.isArray(lyrics)) {
-            paragraphsWithId = lyrics.map((lyricItem, index) => ({ id: index, text: lyricItem.paragraph }));
+            paragraphsWithId = lyrics.map((lyricItem, index) => ({ id: index, text: lyricItem?.paragraph || '' })).filter(p => p.text.trim() !== '');
         }
 
         setParagraphs(paragraphsWithId);

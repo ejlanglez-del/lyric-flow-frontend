@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const logout = useCallback(() => {
     localStorage.removeItem('userInfo');
     setUser(null);
+    window.location.reload(); // Forzar un refresco para limpiar todo el estado de la app
   }, []);
 
   // Load user from localStorage on initial render and set up Axios interceptor

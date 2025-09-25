@@ -8,6 +8,7 @@ import RegisterScreen from './components/RegisterScreen';
 import MemorizeScreen from './components/MemorizeScreen';
 import QuickPracticeScreen from './components/QuickPracticeScreen';
 import AddSongScreen from './components/AddSongScreen';
+import EditSongScreen from './components/EditSongScreen'; // Importar EditSongScreen
 
 export default function App() {
   const { user, loading } = useAuth();
@@ -53,6 +54,11 @@ export default function App() {
   const handleSongAdded = () => {
     fetchSongs();
     backToDashboard();
+  };
+
+  const handleSongUpdated = () => {
+    fetchSongs();
+    navigateTo('library');
   };
 
   const handleExamComplete = async (songId) => {
@@ -105,6 +111,14 @@ export default function App() {
         );
       case 'addSong':
         return <AddSongScreen onSongAdded={handleSongAdded} onBack={backToDashboard} />;
+      case 'editSong': // Añadir caso para la pantalla de edición
+        return (
+          <EditSongScreen
+            song={selectedSong}
+            onSongUpdated={handleSongUpdated}
+            onBack={() => navigateTo('library')}
+          />
+        );
       case 'library':
         return (
           <SongListScreen
@@ -115,7 +129,10 @@ export default function App() {
               const finalMode = isExamMode ? 'exam' : mode || 'practice';
               handleSelectSong(song, finalMode);
             }}
-            onEditSong={(song) => alert('Editar: ' + song.title)} // Placeholder
+            onEditSong={(song) => { // Implementar la navegación a la pantalla de edición
+              setSelectedSong(song);
+              navigateTo('editSong');
+            }}
             onDeleteSong={async (id) => {
               await songService.deleteSong(id, user.token);
               fetchSongs();

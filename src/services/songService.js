@@ -31,7 +31,7 @@ const deleteSong = async (songId, token) => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const { data } = await axios.delete(API_BASE_URL + '/api/songs/' + songId, config);
+      const { data } = await axios.delete(API_BASE_URL + '/api/songs' + songId, config);
       return data;
 }
 
