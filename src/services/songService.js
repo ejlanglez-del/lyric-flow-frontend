@@ -1,108 +1,82 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL;
+const API_BASE_URL = (process.env.REACT_APP_API_URL || '').replace(/\/+$/, '');
+
+const buildUrl = (path) => `${API_BASE_URL}${path}`;
+
+const withAuth = (token) => {
+  if (!token) {
+    throw new Error('Se requiere un token de autenticación para completar esta acción.');
+  }
+
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+};
+
+const request = async (method, path, token, payload) => {
+  const url = buildUrl(path);
+  const config = withAuth(token);
+
+  try {
+    let response;
+
+    if (method === 'get' || method === 'delete') {
+      response = await axios[method](url, config);
+    } else {
+      response = await axios[method](url, payload ?? {}, config);
+    }
+
+    return response.data;
+  } catch (error) {
+    const message =
+      error?.response?.data?.message ||
+      error?.response?.data?.error ||
+      error?.message ||
+      'Ocurrió un error al comunicarse con el servicio de canciones.';
+
+    const normalizedError = new Error(message);
+    normalizedError.status = error?.response?.status;
+    throw normalizedError;
+  }
+};
 
 // Obtener todas las canciones del usuario
-const getSongs = async (token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const { data } = await axios.get(`${API_BASE_URL}/api/songs/`, config);
-  return data;
-};
+const getSongs = (token) => request('get', '/api/songs/', token);
 
 // Crear una nueva canción
-const createSong = async (songData, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const { data } = await axios.post(`${API_BASE_URL}/api/songs/`, songData, config);
-  return data;
-};
+const createSong = (songData, token) => request('post', '/api/songs/', token, songData);
 
 // Eliminar una canción
-const deleteSong = async (songId, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const { data } = await axios.delete(`${API_BASE_URL}/api/songs/${songId}`, config);
-  return data;
-};
+const deleteSong = (songId, token) => request('delete', `/api/songs/${songId}`, token);
 
 // Incrementar el contador de sesiones completadas
-const updateSongRepetitionCount = async (songId, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const { data } = await axios.put(`${API_BASE_URL}/api/songs/${songId}/complete`, {}, config);
-  return data;
-};
+const updateSongRepetitionCount = (songId, token) =>
+  request('put', `/api/songs/${songId}/complete`, token);
 
 const checkDuplicate = async (title, artist, token) => {
   const allSongs = await getSongs(token); // Reuse getSongs to fetch all user's songs
   const normalizedTitle = title.toLowerCase().trim();
   const normalizedArtist = artist.toLowerCase().trim();
 
-  return allSongs.some(song =>
-    song.title.toLowerCase().trim() === normalizedTitle &&
-    song.artist.toLowerCase().trim() === normalizedArtist
+  return allSongs.some(
+    (song) =>
+      song.title.toLowerCase().trim() === normalizedTitle &&
+      song.artist.toLowerCase().trim() === normalizedArtist
   );
 };
 
-const updateSong = async (songData, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const { data } = await axios.put(`${API_BASE_URL}/api/songs/${songData._id}`, songData, config);
-  return data;
-};
+const updateSong = (songData, token) => request('put', `/api/songs/${songData._id}`, token, songData);
 
-const completeExam = async (songId, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const { data } = await axios.put(`${API_BASE_URL}/api/songs/${songId}/complete-exam`, {}, config);
-  return data;
-};
+const completeExam = (songId, token) => request('put', `/api/songs/${songId}/complete-exam`, token);
 
-const logParagraphError = async (songId, paragraphIndex, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const { data } = await axios.post(
-    `${API_BASE_URL}/api/songs/${songId}/lyrics/${paragraphIndex}/error`,
-    {},
-    config
-  );
-  return data;
-};
+const logParagraphError = (songId, paragraphIndex, token) =>
+  request('post', `/api/songs/${songId}/lyrics/${paragraphIndex}/error`, token, {});
 
-const clearParagraphErrors = async (songId, paragraphIndex, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const { data } = await axios.delete(
-    `${API_BASE_URL}/api/songs/${songId}/lyrics/${paragraphIndex}/errors`,
-    config
-  );
-  return data;
-};
+const clearParagraphErrors = (songId, paragraphIndex, token) =>
+  request('delete', `/api/songs/${songId}/lyrics/${paragraphIndex}/errors`, token);
 
 const songService = {
   getSongs,
