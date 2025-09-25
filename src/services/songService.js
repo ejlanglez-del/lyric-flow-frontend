@@ -9,31 +9,31 @@ const getSongs = async (token) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const { data } = await axios.get(API_BASE_URL + '/api/songs/', config);
+  const { data } = await axios.get(`${API_BASE_URL}/api/songs/`, config);
   return data;
 };
 
-// Crear una nueva canciÃ³n
+// Crear una nueva canción
 const createSong = async (songData, token) => {
-    const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const { data } = await axios.post(API_BASE_URL + '/api/songs/', songData, config);
-      return data;
-}
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const { data } = await axios.post(`${API_BASE_URL}/api/songs/`, songData, config);
+  return data;
+};
 
-// Eliminar una canciÃ³n
+// Eliminar una canción
 const deleteSong = async (songId, token) => {
-    const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const { data } = await axios.delete(API_BASE_URL + '/api/songs/' + songId, config);
-      return data;
-}
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const { data } = await axios.delete(`${API_BASE_URL}/api/songs/${songId}`, config);
+  return data;
+};
 
 // Incrementar el contador de sesiones completadas
 const updateSongRepetitionCount = async (songId, token) => {
@@ -42,7 +42,7 @@ const updateSongRepetitionCount = async (songId, token) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const { data } = await axios.put(API_BASE_URL + '/api/songs/' + songId + '/complete', {}, config);
+  const { data } = await axios.put(`${API_BASE_URL}/api/songs/${songId}/complete`, {}, config);
   return data;
 };
 
@@ -63,7 +63,7 @@ const updateSong = async (songData, token) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const { data } = await axios.put(API_BASE_URL + '/api/songs/' + songData._id, songData, config);
+  const { data } = await axios.put(`${API_BASE_URL}/api/songs/${songData._id}`, songData, config);
   return data;
 };
 
@@ -73,7 +73,7 @@ const completeExam = async (songId, token) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const { data } = await axios.put(API_BASE_URL + '/api/songs/' + songId + '/complete-exam', {}, config);
+  const { data } = await axios.put(`${API_BASE_URL}/api/songs/${songId}/complete-exam`, {}, config);
   return data;
 };
 
@@ -104,5 +104,15 @@ const clearParagraphErrors = async (songId, paragraphIndex, token) => {
   return data;
 };
 
-const songService = { getSongs, createSong, deleteSong, updateSongRepetitionCount, checkDuplicate, updateSong, completeExam, logParagraphError, clearParagraphErrors };
+const songService = {
+  getSongs,
+  createSong,
+  deleteSong,
+  updateSongRepetitionCount,
+  checkDuplicate,
+  updateSong,
+  completeExam,
+  logParagraphError,
+  clearParagraphErrors,
+};
 export default songService;
